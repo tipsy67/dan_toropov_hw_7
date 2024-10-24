@@ -25,3 +25,4 @@ urlpatterns = [
     ),
     path("lesson/create", views.LessonCreateAPIView.as_view(), name="user_create"),
 ] + router.urls
+
