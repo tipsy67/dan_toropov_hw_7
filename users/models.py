@@ -1,15 +1,17 @@
-from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db import models
+
 # Create your models here.
 
-NULLABLE = {'null':True, 'blank':True}
+NULLABLE = {"null": True, "blank": True}
+
 
 class User(AbstractUser):
     username = None
-    email = models.EmailField(unique=True, verbose_name='почта')
-    avatar = models.ImageField(upload_to='users/', **NULLABLE, verbose_name='аватар')
-    phone = models.CharField(max_length=30, **NULLABLE, verbose_name='телефон')
-    town = models.CharField(max_length=50, **NULLABLE, verbose_name='город')
+    email = models.EmailField(unique=True, verbose_name="почта")
+    avatar = models.ImageField(upload_to="users/", **NULLABLE, verbose_name="аватар")
+    phone = models.CharField(max_length=30, **NULLABLE, verbose_name="телефон")
+    town = models.CharField(max_length=50, **NULLABLE, verbose_name="город")
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
