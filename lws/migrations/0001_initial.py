@@ -7,36 +7,75 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Lesson',
+            name="Lesson",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50, verbose_name='имя')),
-                ('description', models.TextField(blank=True, null=True, verbose_name='описание')),
-                ('preview', models.ImageField(blank=True, null=True, upload_to='', verbose_name='превью')),
-                ('video_url', models.URLField(blank=True, null=True, verbose_name='ссылка')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50, verbose_name="имя")),
+                (
+                    "description",
+                    models.TextField(blank=True, null=True, verbose_name="описание"),
+                ),
+                (
+                    "preview",
+                    models.ImageField(
+                        blank=True, null=True, upload_to="", verbose_name="превью"
+                    ),
+                ),
+                (
+                    "video_url",
+                    models.URLField(blank=True, null=True, verbose_name="ссылка"),
+                ),
             ],
             options={
-                'verbose_name': 'урок',
-                'verbose_name_plural': 'уроки',
+                "verbose_name": "урок",
+                "verbose_name_plural": "уроки",
             },
         ),
         migrations.CreateModel(
-            name='Course',
+            name="Course",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50, verbose_name='имя')),
-                ('description', models.TextField(blank=True, null=True, verbose_name='описание')),
-                ('preview', models.ImageField(blank=True, null=True, upload_to='', verbose_name='превью')),
-                ('lessons', models.ManyToManyField(related_name='courses', to='lws.lesson', verbose_name='уроки')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50, verbose_name="имя")),
+                (
+                    "description",
+                    models.TextField(blank=True, null=True, verbose_name="описание"),
+                ),
+                (
+                    "preview",
+                    models.ImageField(
+                        blank=True, null=True, upload_to="", verbose_name="превью"
+                    ),
+                ),
+                (
+                    "lessons",
+                    models.ManyToManyField(
+                        related_name="courses", to="lws.lesson", verbose_name="уроки"
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'урок',
-                'verbose_name_plural': 'уроки',
+                "verbose_name": "урок",
+                "verbose_name_plural": "уроки",
             },
         ),
     ]
