@@ -32,4 +32,3 @@ class LessonCreateAPIView(generics.CreateAPIView):
 
 class LessonDestroyAPIView(generics.DestroyAPIView):
     queryset = Lesson.objects.all()
-

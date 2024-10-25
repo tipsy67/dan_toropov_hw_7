@@ -15,3 +15,32 @@ class User(AbstractUser):
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
+
+
+class Payment(models.Model):
+    PAYMENT_METHOD = {"CASH": "", "CARD": ""}
+    user = models.ForeignKey(
+        to="User",
+        on_delete=models.CASCADE,
+        related_name="payments",
+        verbose_name="пользователь",
+    )
+    date_of_payment = models.DateTimeField(verbose_name="дата оплаты")
+    course = models.ForeignKey(
+        to="lws.Course",
+        on_delete=models.SET_NULL,
+        **NULLABLE,
+        related_name="payments",
+        verbose_name="курс"
+    )
+    lesson = models.ForeignKey(
+        to="lws.Lesson",
+        on_delete=models.SET_NULL,
+        **NULLABLE,
+        related_name="payments",
+        verbose_name="урок"
+    )
+    cost = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0, verbose_name="сумма"
+    )
+    payment_method = models.CharField(max_length=4, choices=PAYMENT_METHOD)
