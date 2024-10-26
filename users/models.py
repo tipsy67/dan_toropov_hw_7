@@ -16,9 +16,13 @@ class User(AbstractUser):
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
+    class Meta:
+        verbose_name = "пользователь"
+        verbose_name_plural = "пользователи"
+
 
 class Payment(models.Model):
-    PAYMENT_METHOD = {"CASH": "", "CARD": ""}
+    PAYMENT_METHOD = {"CASH": "наличные", "CARD": "безналичные"}
     user = models.ForeignKey(
         to="User",
         on_delete=models.CASCADE,
@@ -44,3 +48,7 @@ class Payment(models.Model):
         max_digits=10, decimal_places=2, default=0, verbose_name="сумма"
     )
     payment_method = models.CharField(max_length=4, choices=PAYMENT_METHOD)
+
+    class Meta:
+        verbose_name = "платеж"
+        verbose_name_plural = "платежи"

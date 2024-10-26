@@ -33,5 +33,5 @@ class Course(models.Model):
         return f"Course:{self.name}"
 
     class Meta:
-        verbose_name = "урок"
-        verbose_name_plural = "уроки"
+        verbose_name = "курс"
+        verbose_name_plural = "курсы"
