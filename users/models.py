@@ -20,6 +20,18 @@ class User(AbstractUser):
         verbose_name = "пользователь"
         verbose_name_plural = "пользователи"
 
+    @property
+    def is_moderator(self):
+        if (
+            self.has_perm("lws.view_course")
+            and self.has_perm("lws.change_course")
+            and not self.has_perm("lws.add_course")
+            and not self.has_perm("lws.delete_course")
+        ) or self.groups.filter(name="moders").exists():
+            return True
+
+        return False
+
 
 class Payment(models.Model):
     PAYMENT_METHOD = {"CASH": "наличные", "CARD": "безналичные"}

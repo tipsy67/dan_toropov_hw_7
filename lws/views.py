@@ -1,34 +1,61 @@
 from rest_framework import generics, viewsets
 
 from lws.models import Course, Lesson
+from lws.permissions import IsModerator, IsOwner
 from lws.serializer import CourseSerializer, LessonSerializer
 
 
 # Course------------------------
 class CourseViewSet(viewsets.ModelViewSet):
-    queryset = Course.objects.all()
+    # queryset = Course.objects.all()
     serializer_class = CourseSerializer
 
+    def get_queryset(self):
+        if self.request.user.is_moderator or self.request.user.is_superuser:
+            return Course.objects.all()
+
+        return Course.objects.filter(owner=self.request.user)
+
+    def get_permissions(self):
+        if self.action == 'create':
+            self.permission_classes = (~IsModerator,)
+        elif self.action in ('retrieve', 'update', 'partial_update'):
+            self.permission_classes = (IsOwner | IsModerator,)
+        elif self.action == 'destroy':
+            self.permission_classes = (IsOwner,)
+
+        return super().get_permissions()
 
 # Lesson________________________
 class LessonListAPIView(generics.ListAPIView):
-    queryset = Lesson.objects.all()
+    # queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
+
+    def get_queryset(self):
+        if self.request.user.is_moderator or self.request.user.is_superuser:
+            return Lesson.objects.all()
+
+        return Lesson.objects.filter(owner=self.request.user)
 
 
 class LessonRetrieveAPIView(generics.RetrieveAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
+    permission_classes = (IsOwner | IsModerator,)
 
 
 class LessonUpdateAPIView(generics.UpdateAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
+    permission_classes = (IsOwner | IsModerator,)
+
 
 
 class LessonCreateAPIView(generics.CreateAPIView):
     serializer_class = LessonSerializer
+    permission_classes = (~IsModerator,)
 
 
 class LessonDestroyAPIView(generics.DestroyAPIView):
     queryset = Lesson.objects.all()
+    permission_classes = (IsOwner,)

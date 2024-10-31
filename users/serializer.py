@@ -9,6 +9,7 @@ class PaymentSerializer(serializers.ModelSerializer):
         model = Payment
         fields = "__all__"
 
+
 class UserSerializer(serializers.ModelSerializer):
 
     payments = PaymentSerializer(many=True)
