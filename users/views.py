@@ -1,12 +1,34 @@
-from rest_framework import generics, filters
+
 from django_filters.rest_framework import DjangoFilterBackend
-from users.models import User, Payment
-from users.serializer import UserSerializer, PaymentSerializer
+from rest_framework import filters, generics
 
 
-class UsersRetrieveAPIView(generics.RetrieveAPIView):
+from lws.permissions import IsModerator
+from users.models import Payment, User
+from users.serializer import (PaymentSerializer, UserLightSerializer,
+                              UserSerializer)
+
+
+class UsersRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+
+    def get_permissions(self):
+        if not self.request.method == "GET":
+            if not (self.kwargs.get("pk") == self.request.user.id):
+                self.permission_denied(
+                    self.request,
+                    {"detail": "You do not have permission to perform this action."},
+                )
+
+        return super().get_permissions()
+
+    def get_serializer_class(self):
+        user_pk = self.kwargs.get("pk")
+        if user_pk is not None:
+            if user_pk == self.request.user.id:
+                return UserSerializer
+
+        return UserLightSerializer
 
 
 class PaymentListAPIView(generics.ListAPIView):
@@ -20,6 +42,7 @@ class PaymentListAPIView(generics.ListAPIView):
     ordering_fields = [
         "date_of_payment",
     ]
+    permission_classes = (IsModerator,)
 
     def get_queryset(self):
         queryset = Payment.objects.all()

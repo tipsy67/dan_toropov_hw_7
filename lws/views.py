@@ -1,10 +1,9 @@
 from rest_framework import generics, viewsets
+from rest_framework.permissions import IsAuthenticated
 
 from lws.models import Course, Lesson
 from lws.permissions import IsModerator, IsOwner
 from lws.serializer import CourseSerializer, LessonSerializer
-from rest_framework.permissions import IsAuthenticated
-
 
 
 # Course------------------------
@@ -19,14 +18,15 @@ class CourseViewSet(viewsets.ModelViewSet):
         return Course.objects.filter(owner=self.request.user)
 
     def get_permissions(self):
-        if self.action == 'create':
+        if self.action == "create":
             self.permission_classes = (~IsModerator, IsAuthenticated)
-        elif self.action in ('retrieve', 'update', 'partial_update'):
+        elif self.action in ("retrieve", "update", "partial_update"):
             self.permission_classes = (IsOwner | IsModerator, IsAuthenticated)
-        elif self.action == 'destroy':
+        elif self.action == "destroy":
             self.permission_classes = (IsOwner, IsAuthenticated)
 
         return super().get_permissions()
+
 
 # Lesson________________________
 class LessonListAPIView(generics.ListAPIView):
@@ -50,7 +50,6 @@ class LessonUpdateAPIView(generics.UpdateAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     permission_classes = (IsOwner | IsModerator, IsAuthenticated)
-
 
 
 class LessonCreateAPIView(generics.CreateAPIView):
