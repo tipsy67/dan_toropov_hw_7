@@ -1,13 +1,34 @@
 
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, generics
-
+from rest_framework.permissions import AllowAny
 
 from lws.permissions import IsModerator
 from users.models import Payment, User
 from users.serializer import (PaymentSerializer, UserLightSerializer,
                               UserSerializer)
 
+class UserCreateAPIView(generics.CreateAPIView):
+
+    permission_classes = (AllowAny,)
+    serializer_class = UserSerializer
+
+    def perform_create(self, serializer):
+        user = serializer.save(is_active=True)
+        user.set_password(user.password)
+        user.save()
+
+class UserDeleteAPIView(generics.DestroyAPIView):
+    queryset = User.objects.all()
+
+    def get_permissions(self):
+        if not (self.request.user.is_superuser):
+            self.permission_denied(
+                self.request,
+                {"detail": "You do not have permission to perform this action."},
+            )
+
+        return super().get_permissions()
 
 class UsersRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     queryset = User.objects.all()
