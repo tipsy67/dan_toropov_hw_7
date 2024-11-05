@@ -1,12 +1,11 @@
-
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, generics
 from rest_framework.permissions import AllowAny
 
 from lws.permissions import IsModerator
 from users.models import Payment, User
-from users.serializer import (PaymentSerializer, UserLightSerializer,
-                              UserSerializer)
+from users.serializer import PaymentSerializer, UserLightSerializer, UserSerializer
+
 
 class UserCreateAPIView(generics.CreateAPIView):
 
@@ -17,6 +16,7 @@ class UserCreateAPIView(generics.CreateAPIView):
         user = serializer.save(is_active=True)
         user.set_password(user.password)
         user.save()
+
 
 class UserDeleteAPIView(generics.DestroyAPIView):
     queryset = User.objects.all()
@@ -29,6 +29,7 @@ class UserDeleteAPIView(generics.DestroyAPIView):
             )
 
         return super().get_permissions()
+
 
 class UsersRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     queryset = User.objects.all()
