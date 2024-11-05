@@ -1,7 +1,10 @@
-from rest_framework import generics, viewsets
+from gc import get_objects
+from django.shortcuts import get_object_or_404
+from rest_framework import generics, viewsets, status
+from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-
-from lws.models import Course, Lesson
+from rest_framework.views import APIView
+from lws.models import Course, Lesson, Subscribe
 from lws.permissions import IsModerator, IsOwner
 from lws.serializer import CourseSerializer, LessonSerializer
 
@@ -65,3 +68,24 @@ class LessonCreateAPIView(generics.CreateAPIView):
 class LessonDestroyAPIView(generics.DestroyAPIView):
     queryset = Lesson.objects.all()
     permission_classes = (IsOwner, IsAuthenticated)
+
+class SubscribeSetAPIView(APIView):
+
+    def post(self,*args, **kwargs):
+        user = self.request.user
+        course_pk = kwargs.get("pk")
+        course = get_object_or_404(Course, pk=course_pk)
+        subscribe_item = Subscribe.objects.filter(user=user, course=course).first()
+        if subscribe_item is None:
+            Subscribe.objects.create(user=user, course=course, is_active=True)
+            message = "подписка создана"
+        else:
+            if subscribe_item.is_active:
+                subscribe_item.is_active=False
+                message = "подписка выключена"
+            else:
+                subscribe_item.is_active=True
+                message = "подписка включена"
+            subscribe_item.save()
+
+        return Response({"message": message}, status.HTTP_200_OK)

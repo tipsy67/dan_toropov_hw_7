@@ -30,6 +30,8 @@ class Course(models.Model):
     description = models.TextField(**NULLABLE, verbose_name="описание")
     preview = models.ImageField(**NULLABLE, verbose_name="превью")
     owner = models.ForeignKey(to="users.User", on_delete=models.SET_NULL, **NULLABLE)
+    video_url = models.URLField(**NULLABLE, verbose_name="ссылка")
+
 
     def __str__(self):
         return f"Course:{self.name}"
@@ -37,3 +39,12 @@ class Course(models.Model):
     class Meta:
         verbose_name = "курс"
         verbose_name_plural = "курсы"
+
+class Subscribe(models.Model):
+    course = models.ForeignKey(to="Course", related_name="subscriptions", on_delete=models.CASCADE, verbose_name="курс")
+    user = models.ForeignKey(to="users.User", related_name="subscriptions", on_delete=models.CASCADE, verbose_name="пользователь")
+    is_active = models.BooleanField(verbose_name="активность")
+
+    class Meta:
+        verbose_name = "подписка"
+        verbose_name_plural = "подписки"

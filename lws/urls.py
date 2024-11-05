@@ -1,6 +1,7 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 
+
 from lws import views
 from lws.apps import LwsConfig
 from lws.views import CourseViewSet
@@ -11,6 +12,7 @@ router = DefaultRouter()
 router.register(r"course", CourseViewSet, basename="Course")
 
 urlpatterns = [
+    path("course/<int:pk>/subscribe/", views.SubscribeSetAPIView.as_view(), name="subscribe"),
     path("lesson/", views.LessonListAPIView.as_view(), name="lesson_list"),
     path("lesson/<int:pk>/", views.LessonRetrieveAPIView.as_view(), name="lesson_view"),
     path(
