@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 from lws import views
 from lws.apps import LwsConfig
 from lws.views import CourseViewSet
-from users.views import PaymentCreateAPIView
+from users.views import PaymentGetLinkAPIView, PaymentGetStatusAPIView
 
 app_name = LwsConfig.name
 
@@ -19,13 +19,23 @@ urlpatterns = [
     ),
     path(
         "course/<int:pk>/pay/",
-        PaymentCreateAPIView.as_view(),
+        PaymentGetLinkAPIView.as_view(),
         name="course_pay",
     ),
     path(
+        "course/<int:pk>/paystatus/",
+        PaymentGetStatusAPIView.as_view(),
+        name="course_paystatus",
+    ),
+    path(
         "lesson/<int:pk>/pay/",
-        PaymentCreateAPIView.as_view(),
+        PaymentGetLinkAPIView.as_view(),
         name="lesson_pay",
+    ),
+    path(
+        "lesson/<int:pk>/paystatus/",
+        PaymentGetStatusAPIView.as_view(),
+        name="lesson_paystatus",
     ),
     path("lesson/", views.LessonListAPIView.as_view(), name="lesson_list"),
     path("lesson/<int:pk>/", views.LessonRetrieveAPIView.as_view(), name="lesson_view"),

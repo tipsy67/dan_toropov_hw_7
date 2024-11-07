@@ -149,4 +149,4 @@ REST_FRAMEWORK = {
     ],
 }
 
-SECRET_STRIP_KEY = os.environ.get("SECRET_STRIP_KEY")
+SECRET_STRIPE_KEY = os.environ.get("SECRET_STRIPE_KEY")
