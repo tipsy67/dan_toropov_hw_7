@@ -1,7 +1,7 @@
 from django.urls import reverse
-
-from rest_framework.test import APITestCase
 from rest_framework import status
+from rest_framework.test import APITestCase
+
 from lws.models import Course, Lesson
 from users.models import User
 
@@ -72,15 +72,8 @@ class LessonTestCase(APITestCase):
     def test_course_subscribe(self):
         url = reverse("lws:subscribe", args=(self.course.pk,))
         response = self.client.post(url)
-        self.assertEqual(
-            self.course.subscriptions.all().exists(), True
-        )
+        self.assertEqual(self.course.subscriptions.all().exists(), True)
         response = self.client.post(url)
-        self.assertEqual(
-            self.course.subscriptions.all().first().is_active, False
-        )
+        self.assertEqual(self.course.subscriptions.all().first().is_active, False)
         response = self.client.post(url)
-        self.assertEqual(
-            self.course.subscriptions.all().first().is_active, True
-        )
-
+        self.assertEqual(self.course.subscriptions.all().first().is_active, True)

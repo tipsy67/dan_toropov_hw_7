@@ -15,7 +15,10 @@ class Lesson(models.Model):
         related_name="lessons",
         verbose_name="уроки",
     )
-    owner = models.ForeignKey(to="users.User", on_delete=models.SET_NULL, **NULLABLE)
+    owner = models.ForeignKey(
+        to="users.User", on_delete=models.SET_NULL, **NULLABLE, verbose_name="владелец"
+    )
+    price = models.PositiveIntegerField(**NULLABLE, verbose_name="цена")
 
     def __str__(self):
         return f"Lesson:{self.name}"
@@ -29,7 +32,10 @@ class Course(models.Model):
     name = models.CharField(max_length=50, verbose_name="имя")
     description = models.TextField(**NULLABLE, verbose_name="описание")
     preview = models.ImageField(**NULLABLE, verbose_name="превью")
-    owner = models.ForeignKey(to="users.User", on_delete=models.SET_NULL, **NULLABLE)
+    owner = models.ForeignKey(
+        to="users.User", on_delete=models.SET_NULL, **NULLABLE, verbose_name="владелец"
+    )
+    price = models.PositiveIntegerField(**NULLABLE, verbose_name="цена")
     video_url = models.URLField(**NULLABLE, verbose_name="ссылка")
 
     def __str__(self):

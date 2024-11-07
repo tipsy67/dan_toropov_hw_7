@@ -40,8 +40,9 @@ class Payment(models.Model):
         on_delete=models.CASCADE,
         related_name="payments",
         verbose_name="пользователь",
+        **NULLABLE
     )
-    date_of_payment = models.DateTimeField(verbose_name="дата оплаты")
+    date_of_payment = models.DateTimeField(**NULLABLE, verbose_name="дата оплаты")
     course = models.ForeignKey(
         to="lws.Course",
         on_delete=models.SET_NULL,
@@ -59,7 +60,9 @@ class Payment(models.Model):
     cost = models.DecimalField(
         max_digits=10, decimal_places=2, default=0, verbose_name="сумма"
     )
-    payment_method = models.CharField(max_length=4, choices=PAYMENT_METHOD)
+    payment_method = models.CharField(max_length=4, choices=PAYMENT_METHOD, **NULLABLE)
+    payment_id = models.CharField(max_length=255, **NULLABLE)
+    payment_link = models.URLField(max_length=400, **NULLABLE)
 
     class Meta:
         verbose_name = "платеж"
