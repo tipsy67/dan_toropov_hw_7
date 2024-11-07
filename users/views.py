@@ -72,3 +72,11 @@ class PaymentListAPIView(generics.ListAPIView):
         if payment_method:
             queryset = queryset.filter(payment_method=payment_method)
         return queryset
+
+
+class PaymentCreateAPIView(generics.CreateAPIView):
+    serializer_class = PaymentSerializer
+
+    def perform_create(self, serializer, course=None, lesson=None):
+        payment = serializer.save(user=self.request.user, payment_method="CARD")
+        # payment.save()

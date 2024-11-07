@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "rest_framework",
     "django_filters",
+    "drf_yasg",
     "users",
     "lws",
 ]
@@ -147,3 +148,5 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated",
     ],
 }
+
+SECRET_STRIP_KEY = os.environ.get("SECRET_STRIP_KEY")

@@ -1,10 +1,10 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 
-
 from lws import views
 from lws.apps import LwsConfig
 from lws.views import CourseViewSet
+from users.views import PaymentCreateAPIView
 
 app_name = LwsConfig.name
 
@@ -16,6 +16,16 @@ urlpatterns = [
         "course/<int:pk>/subscribe/",
         views.SubscribeSetAPIView.as_view(),
         name="subscribe",
+    ),
+    path(
+        "course/<int:pk>/pay/",
+        PaymentCreateAPIView.as_view(),
+        name="course_pay",
+    ),
+    path(
+        "lesson/<int:pk>/pay/",
+        PaymentCreateAPIView.as_view(),
+        name="lesson_pay",
     ),
     path("lesson/", views.LessonListAPIView.as_view(), name="lesson_list"),
     path("lesson/<int:pk>/", views.LessonRetrieveAPIView.as_view(), name="lesson_view"),

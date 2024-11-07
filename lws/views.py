@@ -1,9 +1,11 @@
 from gc import get_objects
+from drf_yasg.utils import swagger_auto_schema
 from django.shortcuts import get_object_or_404
-from rest_framework import generics, viewsets, status
-from rest_framework.response import Response
+from rest_framework import generics, status, viewsets
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.views import APIView
+
 from lws.models import Course, Lesson, Subscribe
 from lws.paginators import LWSPagination
 from lws.permissions import IsModerator, IsOwner
@@ -76,7 +78,11 @@ class LessonDestroyAPIView(generics.DestroyAPIView):
 
 class SubscribeSetAPIView(APIView):
 
+    @swagger_auto_schema(
+        responses={200: '{"message":"подписка создана|выключена|включена"}'}
+    )
     def post(self, *args, **kwargs):
+        """Процедура создания подписки, либо ее активации/деактивации"""
         user = self.request.user
         course_pk = kwargs.get("pk")
         course = get_object_or_404(Course, pk=course_pk)
