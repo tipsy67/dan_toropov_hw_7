@@ -1,14 +1,18 @@
+from django.urls import reverse
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, generics
 from rest_framework.permissions import AllowAny
-from django.urls import reverse
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from lws.models import Course, Lesson
 from lws.permissions import IsModerator
 from users.models import Payment, User
-from users.serializer import PaymentSerializer, UserLightSerializer, UserSerializer
-from users.src.stripe_utils import create_price_on_stripe, create_link_for_pay, get_status_payment
-from rest_framework.views import APIView
-from rest_framework.response import Response
+from users.serializer import (PaymentSerializer, UserLightSerializer,
+                              UserSerializer)
+from users.src.stripe_utils import (create_link_for_pay,
+                                    create_price_on_stripe, get_status_payment)
+
 
 class UserCreateAPIView(generics.CreateAPIView):
 
@@ -85,7 +89,7 @@ class PaymentGetLinkAPIView(generics.CreateAPIView):
         payment = serializer.save(user=self.request.user, payment_method="CARD")
         pk = self.kwargs.get("pk")
         obj = None
-        if self.request.stream.path == reverse("lws:course_pay", kwargs = {"pk":pk}):
+        if self.request.stream.path == reverse("lws:course_pay", kwargs={"pk": pk}):
             obj = Course.objects.filter(pk=pk).first()
             payment.course = obj
         elif self.request.stream.path == reverse("lws:lesson_pay", kwargs={"pk": pk}):
@@ -96,16 +100,25 @@ class PaymentGetLinkAPIView(generics.CreateAPIView):
         payment.payment_id, payment.payment_link = create_link_for_pay(price)
         payment.save()
 
+
 class PaymentGetStatusAPIView(APIView):
 
     def get(self, *args, **kwargs):
         pk = kwargs.get("pk")
-        if self.request.stream.path == reverse("lws:course_paystatus", kwargs={"pk": pk}):
+        if self.request.stream.path == reverse(
+            "lws:course_paystatus", kwargs={"pk": pk}
+        ):
             obj = Course.objects.filter(pk=pk).first()
-            payment = Payment.objects.filter(user=self.request.user, course=obj, lesson=None).first()
-        elif self.request.stream.path == reverse("lws:lesson_paystatus", kwargs={"pk": pk}):
+            payment = Payment.objects.filter(
+                user=self.request.user, course=obj, lesson=None
+            ).first()
+        elif self.request.stream.path == reverse(
+            "lws:lesson_paystatus", kwargs={"pk": pk}
+        ):
             obj = Lesson.objects.filter(pk=pk).first()
-            payment = Payment.objects.filter(user=self.request.user, course=None, lesson=obj).first()
+            payment = Payment.objects.filter(
+                user=self.request.user, course=None, lesson=obj
+            ).first()
 
         if payment is not None:
             status = get_status_payment(payment.payment_id)
@@ -113,4 +126,3 @@ class PaymentGetStatusAPIView(APIView):
             status = "payment not found"
 
         return Response({"status": status})
-

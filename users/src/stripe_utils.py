@@ -1,8 +1,9 @@
 from itertools import product
 
+import stripe
+
 from config.settings import SECRET_STRIPE_KEY
 from lws.models import Course, Lesson
-import stripe
 
 stripe.api_key = SECRET_STRIPE_KEY
 
@@ -32,7 +33,7 @@ def create_price_on_stripe(obj: Course | Lesson):
     product = get_product_from_stripe(obj).get("data")[0]
     return stripe.Price.create(
         currency="usd",
-        unit_amount=obj.price*100,
+        unit_amount=obj.price * 100,
         product=product.get("id"),
     )
 
