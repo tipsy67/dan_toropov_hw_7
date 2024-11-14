@@ -3,15 +3,18 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, generics
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from rest_framework.serializers import ValidationError
 from rest_framework.views import APIView
 
 from lws.models import Course, Lesson
 from lws.permissions import IsModerator
 from users.models import Payment, User
-from users.serializer import (PaymentSerializer, UserLightSerializer,
-                              UserSerializer)
-from users.src.stripe_utils import (create_link_for_pay,
-                                    create_price_on_stripe, get_status_payment)
+from users.serializer import PaymentSerializer, UserLightSerializer, UserSerializer
+from users.src.stripe_utils import (
+    create_link_for_pay,
+    create_price_on_stripe,
+    get_status_payment,
+)
 
 
 class UserCreateAPIView(generics.CreateAPIView):
@@ -82,7 +85,7 @@ class PaymentListAPIView(generics.ListAPIView):
 
 
 class PaymentGetLinkAPIView(generics.CreateAPIView):
-
+    queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
 
     def perform_create(self, serializer):
@@ -94,7 +97,9 @@ class PaymentGetLinkAPIView(generics.CreateAPIView):
             payment.course = obj
         elif self.request.stream.path == reverse("lws:lesson_pay", kwargs={"pk": pk}):
             obj = Lesson.objects.filter(pk=pk).first()
-            payment.course = obj
+            payment.lesson = obj
+        if obj is None:
+            raise ValidationError("Нет такого материала для обучения")
         payment.cost = obj.price
         price = create_price_on_stripe(obj)
         payment.payment_id, payment.payment_link = create_link_for_pay(price)

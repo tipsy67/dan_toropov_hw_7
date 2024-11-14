@@ -5,6 +5,7 @@ from users.models import Payment, User
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
+    # readonly_fields = ('last_login',)
 
     def save_model(self, request, obj, form, change):
         if "password" in form.changed_data:

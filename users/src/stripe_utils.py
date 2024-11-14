@@ -22,15 +22,17 @@ def get_stripe_id(obj):
 
 def get_product_from_stripe(obj: Course | Lesson):
     stripe_id = get_stripe_id(obj)
-    product = stripe.Product.search(query=f"active:'true' AND name:'{obj.name}'")
-    if product is None:
+    product = stripe.Product.search(query=f"name:'{obj.name}'")
+    if not len(product.data):
         product = stripe.Product.create(name=f"{obj.name}", id=stripe_id)
+    else:
+        product = product.get("data")[0]
 
     return product
 
 
 def create_price_on_stripe(obj: Course | Lesson):
-    product = get_product_from_stripe(obj).get("data")[0]
+    product = get_product_from_stripe(obj)
     return stripe.Price.create(
         currency="usd",
         unit_amount=obj.price * 100,
