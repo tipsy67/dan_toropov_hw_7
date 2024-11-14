@@ -11,6 +11,7 @@ from lws.models import Course, Lesson, Subscribe
 from lws.paginators import LWSPagination
 from lws.permissions import IsModerator, IsOwner
 from lws.serializer import CourseSerializer, LessonSerializer
+from users.tasks import sendmail_for_subscribers
 
 
 # Course------------------------
@@ -37,6 +38,10 @@ class CourseViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
+    def perform_update(self, serializer):
+        obj = serializer.save()
+        sendmail_for_subscribers.delay(obj.pk)
 
 
 # Lesson________________________

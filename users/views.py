@@ -1,19 +1,20 @@
-from rest_framework.serializers import ValidationError
-
 from django.urls import reverse
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, generics
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from rest_framework.serializers import ValidationError
 from rest_framework.views import APIView
 
 from lws.models import Course, Lesson
 from lws.permissions import IsModerator
 from users.models import Payment, User
-from users.serializer import (PaymentSerializer, UserLightSerializer,
-                              UserSerializer)
-from users.src.stripe_utils import (create_link_for_pay,
-                                    create_price_on_stripe, get_status_payment)
+from users.serializer import PaymentSerializer, UserLightSerializer, UserSerializer
+from users.src.stripe_utils import (
+    create_link_for_pay,
+    create_price_on_stripe,
+    get_status_payment,
+)
 
 
 class UserCreateAPIView(generics.CreateAPIView):

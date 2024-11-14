@@ -1,4 +1,7 @@
+from django.utils import timezone
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 from users.models import Payment, User
 
@@ -27,3 +30,12 @@ class UserLightSerializer(serializers.ModelSerializer):
             "password",
             "last_name",
         )
+
+
+# class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+#     @classmethod
+#     def get_token(cls, user):
+#         token = super().get_token(user)
+#         user.last_login = timezone.now()
+#         user.save()
+#         return token

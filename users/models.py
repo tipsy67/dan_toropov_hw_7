@@ -12,7 +12,7 @@ class User(AbstractUser):
     avatar = models.ImageField(upload_to="users/", **NULLABLE, verbose_name="аватар")
     phone = models.CharField(max_length=30, **NULLABLE, verbose_name="телефон")
     town = models.CharField(max_length=50, **NULLABLE, verbose_name="город")
-
+    # last_login = models.DateTimeField(**NULLABLE)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
