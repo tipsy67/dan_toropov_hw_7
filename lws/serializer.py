@@ -27,7 +27,7 @@ class CourseSerializer(serializers.ModelSerializer):
         return obj.lessons.all().count()
 
     def get_current_user_is_subscriber(self, obj):
-        user = self.context['request'].user
+        user = self.context["request"].user
         subscribe = obj.subscriptions.filter(user=user).first()
         if subscribe is None or not subscribe.is_active:
             return False
