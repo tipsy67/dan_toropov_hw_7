@@ -20,6 +20,7 @@ drf-yasg = "^1.21.8"
 celery = "^5.4.0"
 django-celery-beat = "^2.7.0"
 redis = "^5.2.0"
+stripe = "^11.3.0"
 
 
 [tool.poetry.group.dev.dependencies]
